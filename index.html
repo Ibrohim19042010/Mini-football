@@ -3,300 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mini Football Pro - DLS Style</title>
+    <title>Mini Football Pro</title>
     <style>
-        body { margin: 0; padding: 0; background: #0b0e14; color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; touch-action: none; }
-
-        /* ================= TOP BAR ================= */
-        #top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 55px; background: #111622; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #1f293d; z-index: 10000; box-sizing: border-box; }
-        .balance-box { background: #172030; padding: 8px 15px; border-radius: 20px; font-weight: bold; color: #f1c40f; font-size: 14px; border: 1px solid #2c3e50; }
-        .limit-box { background: #2c3e50; color: #fff; font-weight: bold; padding: 6px 12px; border-radius: 8px; font-size: 13px; }
-
-        /* ================= ASOSIY OYNA ================= */
-        #main-container { margin-top: 55px; height: calc(100vh - 120px); overflow-y: auto; position: relative; overflow-x: hidden; }
-        .tab-content { display: none; padding: 15px; padding-bottom: 30px; }
+        body { margin: 0; background: #0b0e14; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        #top-bar { position: fixed; top: 0; width: 100%; height: 55px; background: #111622; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 1000; box-sizing: border-box; }
+        #main-container { margin-top: 55px; height: calc(100vh - 120px); overflow-y: auto; }
+        .tab-content { display: none; padding: 15px; }
         .active-tab { display: block; }
-        
-        /* ================= 1. JAMOAM (DLS STYLE) ================= */
-        /* Taktik maydon */
-        .squad-pitch { 
-            background: repeating-linear-gradient(0deg, #1e824c, #1e824c 10%, #26a65b 10%, #26a65b 20%); 
-            height: 380px; border-radius: 12px; position: relative; border: 2px solid rgba(255,255,255,0.2); 
-            margin-bottom: 20px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); 
-        }
-        .pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; }
-        .pitch-center-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.3); transform: translateY(-50%); }
-        .pitch-penalty-area { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 60px; border: 2px solid rgba(255,255,255,0.3); border-bottom: none; }
-        
-        /* O'yinchi kartochkalari umumiy stili */
-        .player-card { background: linear-gradient(135deg, #1e272e, #2c3e50); border: 2px solid #f1c40f; border-radius: 8px; text-align: center; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.7); position: relative; }
-        .card-ovr { background: #f1c40f; color: #000; font-weight: bold; font-size: 11px; padding: 2px 0; }
-        .card-img { height: 50px; background: #353b48; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; }
-        .card-name { font-size: 9px; padding: 3px; font-weight: bold; background: #1a1f29; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        /* Maydondagi (Asosiy) kartochkalar */
-        .pitch-card { position: absolute; width: 60px; transform: translateX(-50%); z-index: 10; transition: all 0.3s ease; }
-        .pos-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; font-size: 8px; padding: 2px 4px; border-radius: 4px; font-weight: bold; border: 1px solid white; z-index: 11;}
-
-        /* Zaxira scroll stili */
-        .section-title { font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 10px; border-left: 4px solid #3498db; padding-left: 8px; text-transform: uppercase; }
-        .bench-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scroll-behavior: smooth; }
-        .bench-scroll-container::-webkit-scrollbar { height: 6px; }
-        .bench-scroll-container::-webkit-scrollbar-thumb { background: #3498db; border-radius: 10px; }
-        
-        .bench-card { flex: 0 0 75px; /* Karta kengligi qotirilgan */ border-color: #3498db; }
-        .bench-card .card-ovr { background: #3498db; color: white; }
-        .btn-sell { background: #e74c3c; color: white; border: none; font-size: 10px; padding: 5px 0; cursor: pointer; font-weight: bold; width: 100%; display: block; }
-
-        /* ================= 2. O'YNASH BO'LIMI ================= */
-        #tab-play { padding: 0; display: none; height: 100%; flex-direction: column; }
-        #tab-play.active-tab { display: flex; }
-        
-        #game-field { flex: 1; background: repeating-linear-gradient(0deg, #219653, #219653 10%, #27ae60 10%, #27ae60 20%); position: relative; overflow: hidden; }
-        .center-line { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.5); transform: translateY(-50%); }
-        .center-circle { position: absolute; top: 50%; left: 50%; width: 80px; height: 80px; border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; transform: translate(-50%, -50%); }
-        .goal { position: absolute; left: 50%; transform: translateX(-50%); width: 100px; height: 20px; border: 3px solid rgba(255,255,255,0.8); }
-        .goal-top { top: 0; border-top: none; }
-        .goal-bottom { bottom: 0; border-bottom: none; }
-
-        /* 3D Inson Modeli */
-        .human-player { width: 30px; height: 45px; position: absolute; transform: translate(-50%, -50%); z-index: 5; display: flex; flex-direction: column; align-items: center; }
-        .human-head { width: 14px; height: 14px; background: #ffdbac; border-radius: 50%; position: relative; }
-        .human-hair { width: 16px; height: 6px; background: #2c3e50; border-radius: 8px 8px 0 0; position: absolute; top: -2px; left: -1px; }
-        .human-body { width: 22px; height: 24px; background: linear-gradient(to bottom, #3498db, #2980b9); border-radius: 5px 5px 2px 2px; margin-top: -1px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; color: white; box-shadow: 0 3px 5px rgba(0,0,0,0.4); }
-        .opp-human .human-body { background: linear-gradient(to bottom, #e74c3c, #c0392b); }
-        .opp-human .human-hair { background: #111; }
-        
-        .running { animation: runAnim 0.3s infinite alternate ease-in-out; }
-        @keyframes runAnim { 0% { transform: translate(-50%, -50%) rotate(5deg) scaleY(0.95); } 100% { transform: translate(-50%, -50%) rotate(-5deg) scaleY(1.05); } }
-
-        #active-player { z-index: 10; }
-        #active-player .human-body { background: linear-gradient(to bottom, #f1c40f, #f39c12); color: black; }
-
-        .ball { width: 16px; height: 16px; position: absolute; transform: translate(-50%, -50%); z-index: 12; border-radius: 50%; background: #fff; background-image: radial-gradient(circle at 35% 35%, #ffffff 0%, #e0e0e0 50%, #888888 100%); box-shadow: 2px 4px 6px rgba(0,0,0,0.5); border: 1px solid #333; transition: all 0.15s linear; }
-        .ball::before { content: "⚽"; position: absolute; top: -2px; left: -1px; font-size: 15px; }
-
-        /* Boshqaruv */
-        #controls { height: 120px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #111; border-top: 1px solid #333; }
-        #joystick-area { width: 90px; height: 90px; background: rgba(255,255,255,0.1); border-radius: 50%; position: relative; border: 2px solid rgba(255,255,255,0.2); }
-        #joystick-knob { width: 35px; height: 35px; background: rgba(255,255,255,0.5); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        .action-btns button { width: 55px; height: 55px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: white; font-size: 14px; font-weight: bold; margin-left: 10px; }
-
-        /* ================= 3. TRANSFER ================= */
-        .pack-box { background: linear-gradient(145deg, #2c3e50, #1a252f); border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-        .pack-box.mega { border-color: #e74c3c; background: linear-gradient(145deg, #34495e, #1e272e); }
-        .pack-btn-buy { background: #f1c40f; color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin-top: 10px; width: 100%; font-size: 16px; }
-
-        #pack-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 20000; align-items: center; justify-content: center; flex-direction: column; }
-
-        /* ================= PASTKI NAVIGATSIYA (FIXED) ================= */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #0b0e14; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1f293d; z-index: 10000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 12px; color: #7f8c8d; width: 33%; cursor: pointer; }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
-        .active-nav { color: #3498db; font-weight: bold; }
-        .active-nav .nav-icon { transform: scale(1.2); }
+        .squad-pitch { background: #27ae60; height: 350px; border-radius: 12px; position: relative; border: 2px solid white; margin-bottom: 20px; }
+        .pitch-card { position: absolute; width: 60px; transform: translateX(-50%); background: #1c2833; border: 2px solid #f1c40f; border-radius: 8px; text-align: center; }
+        .card-ovr { background: #f1c40f; color: #000; font-weight: bold; font-size: 11px; }
+        .card-name { font-size: 9px; padding: 3px; }
+        .bench-scroll-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .bench-card { flex: 0 0 70px; background: #1c2833; border: 2px solid #3498db; border-radius: 8px; text-align: center; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 60px; background: #0b0e14; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
+        .active-nav { color: #3498db; }
     </style>
 </head>
 <body>
-
-    <div id="top-bar">
-        <div class="balance-box">💰 <span id="user-balance">1000</span></div>
-        <div class="limit-box">Jamoa: <span id="squad-count">5</span>/15</div>
+        <div id="top-bar">
+        <div id="user-balance">💰 1000</div>
+        <div id="squad-count">Jamoa: 5/15</div>
     </div>
 
     <div id="main-container">
-        
         <div id="tab-team" class="tab-content active-tab">
-            <div class="squad-pitch" id="formation-pitch">
-                <div class="pitch-center-line"></div>
-                <div class="pitch-center-circle"></div>
-                <div class="pitch-penalty-area"></div>
-                
-                </div>
-            
-            <div class="section-title">ZAXIRA TARKIB (MAX 10 TA)</div>
-            <div id="bench-scroll" class="bench-scroll-container">
-                </div>
+            <div class="squad-pitch" id="formation-pitch"></div>
+            <h3>ZAXIRA</h3>
+            <div id="bench-scroll" class="bench-scroll-container"></div>
         </div>
-
+        
         <div id="tab-play" class="tab-content">
-            <div id="game-field">
-                <div class="center-line"></div><div class="center-circle"></div>
-                <div class="goal goal-top"></div><div class="goal goal-bottom"></div>
-                <div class="ball" id="match-ball"></div>
-                <div class="human-player" style="top: 80%; left: 50%;"><div class="human-head"><div class="human-hair"></div></div><div class="human-body">GK</div></div>
-                <div class="human-player" style="top: 65%; left: 30%;"><div class="human-head"><div class="human-hair"></div></div><div class="human-body">DF</div></div>
-                <div class="human-player" style="top: 65%; left: 70%;"><div class="human-head"><div class="human-hair"></div></div><div class="human-body">DF</div></div>
-                <div class="human-player" id="active-player" style="top: 55%; left: 50%;"><div class="human-head"><div class="human-hair" style="background:#d35400;"></div></div><div class="human-body">10</div></div>
-                <div class="human-player opp-human" style="top: 20%; left: 50%;"><div class="human-head"><div class="human-hair"></div></div><div class="human-body">GK</div></div>
-                <div class="human-player opp-human" style="top: 40%; left: 40%;"><div class="human-head"><div class="human-hair"></div></div><div class="human-body">MD</div></div>
-            </div>
-            <div id="controls">
-                <div id="joystick-area"><div id="joystick-knob"></div></div>
-                <div class="action-btns">
-                    <button onclick="passBall()">Pass</button>
-                    <button onclick="shootBall()" style="background:rgba(231,76,60,0.5);">Zarba</button>
-                </div>
-            </div>
+            <div style="height:250px; background:#27ae60; border:2px solid white; position:relative;"></div>
+            <p>O'yin maydoni</p>
         </div>
-
+        
         <div id="tab-transfer" class="tab-content">
-            <div class="pack-box">
-                <div style="font-size:40px;">📦</div>
-                <h3>1x STANDART PACK</h3>
-                <button class="pack-btn-buy" onclick="buyPack(1, 150)">150 💰 Sotib olish</button>
-            </div>
-            <div class="pack-box mega">
-                <div style="font-size:40px;">🔥</div>
-                <h3 style="color:#e74c3c;">3x PREMIUM PACK</h3>
-                <button class="pack-btn-buy" style="background:#e74c3c; color:white;" onclick="buyPack(3, 400)">400 💰 Sotib olish</button>
-            </div>
+            <button onclick="buyPack()">Pack ochish (150💰)</button>
         </div>
-
     </div>
 
     <div class="nav-bar">
-        <div class="nav-item active-nav" onclick="switchTab('tab-team', this)"><div class="nav-icon">🛡️</div><span>Jamoam</span></div>
-        <div class="nav-item" onclick="switchTab('tab-play', this)"><div class="nav-icon">⚽</div><span>O'ynash</span></div>
-        <div class="nav-item" onclick="switchTab('tab-transfer', this)"><div class="nav-icon">🔄</div><span>Transfer</span></div>
+        <div class="nav-item active-nav" onclick="switchTab('tab-team', this)">Jamoam</div>
+        <div class="nav-item" onclick="switchTab('tab-play', this)">O'ynash</div>
+        <div class="nav-item" onclick="switchTab('tab-transfer', this)">Transfer</div>
     </div>
-
-    <div id="pack-modal">
-        <h2 style="color: #f1c40f;">YANGI SHARTNOMA!</h2>
-        <div id="modal-cards" style="display:flex; gap:10px; margin:20px 0; max-width:90%; overflow-x:auto;"></div>
-        <button style="padding:10px 30px; background:#3498db; color:white; border:none; border-radius:20px; font-weight:bold; font-size:16px;" onclick="closeModal()">Davom etish</button>
-    </div>
-
-    <script>
+        <script>
         let balance = 1000;
-        
-        // Asosiy tarkib (Pozitsiyalar bilan)
         let mainSquad = [
-            { name: "SHOMURODOV", ovr: 86, img: "eldor.jpg", pos: "CF", top: "12%", left: "50%" },
-            { name: "FAYZULLAYEV", ovr: 85, img: "abbos.jpg", pos: "LW", top: "45%", left: "25%" },
-            { name: "MASHARIPOV", ovr: 83, img: "masharipov.jpg", pos: "RW", top: "45%", left: "75%" },
-            { name: "ALIQULOV", ovr: 80, img: "aliqulov.jpg", pos: "CB", top: "72%", left: "50%" },
-            { name: "YUSUPOV", ovr: 82, img: "yusupov.jpg", pos: "GK", top: "85%", left: "50%" }
+            { name: "SHOMURODOV", ovr: 86, top: "15%", left: "50%" },
+            { name: "FAYZULLAYEV", ovr: 85, top: "45%", left: "25%" },
+            { name: "MASHARIPOV", ovr: 83, top: "45%", left: "75%" },
+            { name: "ALIQULOV", ovr: 80, top: "70%", left: "50%" },
+            { name: "YUSUPOV", ovr: 82, top: "85%", left: "50%" }
         ];
-        
         let benchSquad = [];
-        const pool = [
-            { name: "URUNOV", ovr: 81, img: "urunov.jpg", price: 60 },
-            { name: "SHUKUROV", ovr: 82, img: "shukurov.jpg", price: 70 },
-            { name: "KHUSANOV", ovr: 84, img: "khusanov.jpg", price: 90 },
-            { name: "SAYFIEV", ovr: 77, img: "sayfiev.jpg", price: 40 },
-            { name: "ERKINV", ovr: 79, img: "erkinov.jpg", price: 50 },
-            { name: "SERGEEV", ovr: 78, img: "sergeev.jpg", price: 45 }
-        ];
 
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-            document.getElementById(tabId).classList.add('active-tab');
+        function switchTab(id, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            element.classList.add('active-nav');
+            el.classList.add('active-nav');
         }
 
-        // --- DLS FORMATIDA RENDER QILISH ---
-        function renderSquad() {
-            // 1. Asosiy jamoani maydonga joylash
+        function render() {
             const pitch = document.getElementById('formation-pitch');
-            // Chiziqlarni saqlab qolgan holda kartalarni yangilaymiz
-            pitch.innerHTML = `
-                <div class="pitch-center-line"></div>
-                <div class="pitch-center-circle"></div>
-                <div class="pitch-penalty-area"></div>
-            ` + mainSquad.map(p => `
-                <div class="player-card pitch-card" style="top:${p.top}; left:${p.left};">
-                    <div class="pos-badge">${p.pos}</div>
+            pitch.innerHTML = mainSquad.map(p => `
+                <div class="pitch-card" style="top:${p.top}; left:${p.left};">
                     <div class="card-ovr">${p.ovr}</div>
-                    <div class="card-img"><img src="${p.img}" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${p.name}'"></div>
                     <div class="card-name">${p.name}</div>
-                </div>`).join('');
-
-            // 2. Zaxirani horizontal scroll formatida chiqarish
-            const benchHTML = benchSquad.map((p, i) => `
-                <div class="player-card bench-card">
-                    <div class="card-ovr">${p.ovr}</div>
-                    <div class="card-img"><img src="${p.img}" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${p.name}'"></div>
-                    <div class="card-name">${p.name}</div>
-                    <button class="btn-sell" onclick="sellPlayer(${i})">${p.price}💰 Sot</button>
                 </div>`).join('');
             
-            document.getElementById('bench-scroll').innerHTML = benchHTML || `<div style="color:#7f8c8d; padding:20px; font-size:12px; font-style:italic;">Zaxirangiz bo'sh. Pack oching!</div>`;
-
-            document.getElementById('user-balance').innerText = balance;
-            document.getElementById('squad-count').innerText = mainSquad.length + benchSquad.length;
+            document.getElementById('bench-scroll').innerHTML = benchSquad.map(p => `
+                <div class="bench-card">
+                    <div class="card-ovr">${p.ovr}</div>
+                    <div class="card-name">${p.name}</div>
+                </div>`).join('');
         }
-
-        function buyPack(count, price) {
-            if (mainSquad.length + benchSquad.length + count > 15) return alert("Limit 15 ta! Zaxiradagilarni sotib joy bo'shating.");
-            if (balance < price) return alert("Mablag' yetarli emas!");
-            
-            balance -= price;
-            let modalHTML = "";
-            for(let i=0; i<count; i++) {
-                let p = {...pool[Math.floor(Math.random() * pool.length)]};
-                benchSquad.push(p); // Zaxiraga avtomatik qo'shiladi
-                modalHTML += `
-                    <div class="player-card bench-card" style="width:75px;">
-                        <div class="card-ovr">${p.ovr}</div>
-                        <div class="card-img"><img src="${p.img}" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=${p.name}'"></div>
-                        <div class="card-name">${p.name}</div>
-                    </div>`;
+        
+        function buyPack() {
+            if(balance >= 150) {
+                balance -= 150;
+                benchSquad.push({name: "YANGI", ovr: 75});
+                render();
             }
-            document.getElementById('modal-cards').innerHTML = modalHTML;
-            document.getElementById('pack-modal').style.display = 'flex';
-            renderSquad();
         }
-
-        function closeModal() { document.getElementById('pack-modal').style.display = 'none'; }
-        
-        function sellPlayer(index) { 
-            balance += benchSquad[index].price; 
-            benchSquad.splice(index, 1); 
-            renderSquad(); 
-        }
-
-        // --- JOYSTICK VA HARAKAT ---
-        const joyArea = document.getElementById('joystick-area');
-        const joyKnob = document.getElementById('joystick-knob');
-        const player = document.getElementById('active-player');
-        const ball = document.getElementById('match-ball');
-        
-        let isDragging = false, joyCx, joyCy, px = 50, py = 55, hasBall = true;
-
-        joyArea.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            const rect = joyArea.getBoundingClientRect();
-            joyCx = rect.left + rect.width / 2; joyCy = rect.top + rect.height / 2;
-            player.classList.add('running');
-        }, {passive: true});
-
-        joyArea.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            let dx = e.touches[0].clientX - joyCx, dy = e.touches[0].clientY - joyCy;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist > 35) { dx = (dx/dist)*35; dy = (dy/dist)*35; }
-            joyKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-
-            px += dx * 0.05; py += dy * 0.05;
-            px = Math.max(5, Math.min(95, px)); py = Math.max(5, Math.min(95, py));
-            player.style.left = px + "%"; player.style.top = py + "%";
-            
-            if(hasBall) { ball.style.left = px + "%"; ball.style.top = (py - 3) + "%"; }
-        }, {passive: true});
-
-        joyArea.addEventListener('touchend', () => {
-            isDragging = false; joyKnob.style.transform = `translate(-50%, -50%)`; player.classList.remove('running');
-        });
-
-        function shootBall() { if(hasBall) { hasBall=false; ball.style.top="5%"; ball.style.left="50%"; setTimeout(()=>{alert("Ajoyib Zarba! ⚽"); resetBall();}, 600); } }
-        function passBall() { if(hasBall) { hasBall=false; ball.style.left="20%"; ball.style.top="65%"; setTimeout(resetBall, 800); } }
-        function resetBall() { hasBall=true; px=50; py=55; player.style.left="50%"; player.style.top="55%"; ball.style.left="50%"; ball.style.top="52%"; }
-
-        // Boshlang'ich yuklash
-        renderSquad();
+        render();
     </script>
 </body>
 </html>
