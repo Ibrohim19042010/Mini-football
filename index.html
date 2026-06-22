@@ -79,10 +79,20 @@
         </div>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-    </script>
+<script>
+    // Telegram WebApp interfeysini ishga tushirish
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Oynani to'liq ekranga ochish
+
+    // Telegram'dan foydalanuvchi ma'lumotlarini olish
+    const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+
+    if (user) {
+        // Agar foydalanuvchi ismi bo'lsa, kartadagi nomni uning ismiga o'zgartiramiz
+        document.querySelector('.player-name').innerText = user.first_name;
+    }
+</script>
+
 </body>
   </html>
   
