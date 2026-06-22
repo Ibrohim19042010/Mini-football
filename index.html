@@ -73,12 +73,10 @@
         .player-slot {
             position: absolute; width: 60px; background: linear-gradient(135deg, #17212b, #0e1621); border: 2px solid #f1c40f; border-radius: 6px; text-align: center; padding: 4px 2px; transform: translateX(-50%); box-shadow: 0 4px 8px rgba(0,0,0,0.6); transition: 0.2s;
         }
-        .player-slot:active { transform: translateX(-50%) scale(0.9); }
         .slot-ovr { color: #f1c40f; font-weight: 900; font-size: 13px; }
         .slot-emoji { font-size: 22px; margin: 2px 0; }
         .slot-name { color: #ffffff; font-size: 9px; font-weight: bold; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px;}
 
-        /* Joylashuvlar */
         .slot-st { top: 8%; left: 50%; }
         .slot-mid { top: 35%; left: 50%; }
         .slot-def { top: 62%; left: 50%; }
@@ -93,13 +91,29 @@
         .placeholder-box { background: #17212b; width: 100%; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #24303f; box-sizing: border-box; }
         .btn-match { background: linear-gradient(90deg, #e74c3c, #c0392b); color: white; border: none; padding: 14px 40px; font-size: 16px; font-weight: bold; border-radius: 12px; margin-top: 20px; cursor: pointer; width: 100%; }
 
-        /* Nav Bar */
+        /* PROFESSIONAL UNIKAL PASTKI MENYU */
         .nav-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: #17212b; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #24303f; z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: #17212b; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #24303f; z-index: 1000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #7f8c8d; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 33%; }
-        .nav-item span { font-size: 22px; margin-bottom: 4px; }
-        .nav-item.active-nav { color: #3498db; }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; color: #7f8c8d; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 33%; opacity: 0.5;
+        }
+        
+        /* Unikal unikal ikonlar uchun maxsus klass */
+        .nav-icon {
+            width: 26px; height: 26px; object-fit: contain; margin-bottom: 6px; filter: invert(1); /* Qora rasmlarni oq rangga o'tkazadi */
+            transition: 0.2s ease;
+        }
+        
+        /* Aktiv bo'lgandagi holat */
+        .nav-item.active-nav { 
+            color: #3498db; opacity: 1; 
+        }
+        .nav-item.active-nav .nav-icon {
+            /* Aktiv menyuda ikonka ko'k-neon tusga kiradi */
+            filter: invert(53%) sepia(93%) saturate(475%) hue-rotate(181deg) brightness(95%) contrast(93%);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -109,9 +123,10 @@
         <span class="balance" id="coin-balance">💰 1000</span>
     </div>
 
+    <!-- ================= 1-OYNA: JAMOAM ================= -->
     <div id="tab-squad" class="tab-content active-tab">
         <div class="team-header">
-            <div class="team-name" id="team-name-display">FC THE END</div>
+            <div class="team-name">FC THE END</div>
             <div class="team-ovr">OVR: <span id="team-ovr-display">84</span></div>
         </div>
         
@@ -126,19 +141,16 @@
                 <div class="slot-emoji" id="st-emoji">🏃‍♂️</div>
                 <div class="slot-name" id="st-name">B. LEE</div>
             </div>
-            
             <div class="player-slot slot-mid">
                 <div class="slot-ovr" id="mid-ovr">85</div>
                 <div class="slot-emoji" id="mid-emoji">💎</div>
                 <div class="slot-name" id="mid-name">BELLINGHAM</div>
             </div>
-            
             <div class="player-slot slot-def">
                 <div class="slot-ovr" id="def-ovr">84</div>
                 <div class="slot-emoji" id="def-emoji">🧱</div>
                 <div class="slot-name" id="def-name">VAN DIJK</div>
             </div>
-            
             <div class="player-slot slot-gk">
                 <div class="slot-ovr" id="gk-ovr">80</div>
                 <div class="slot-emoji" id="gk-emoji">🧤</div>
@@ -149,31 +161,37 @@
         <button class="btn-pack" onclick="openPack()">🎁 YANGI O'YINCHI (150 💰)</button>
     </div>
 
+    <!-- ================= 2-OYNA: O'YINASH ================= -->
     <div id="tab-play" class="tab-content">
         <div class="page-title">🎮 4x4 MATCH</div>
         <div class="placeholder-box">
-            <p style="color: #8899a6;">Jamoangiz OVR kuchi 84. Raqib topish va o'yinni boshlash uchun pastdagi tugmani bosing.</p>
+            <p style="color: #8899a6;">Jamoangiz tayyor. Raqib topish va o'yinni boshlash uchun pastdagi tugmani bosing.</p>
             <div style="font-size: 50px; margin: 20px 0;">🏟️</div>
             <button class="btn-match" onclick="startMatch()">⚔️ O'YINNI BOSHLASH</button>
         </div>
     </div>
 
+    <!-- ================= 3-OYNA: TRANSFER ================= -->
     <div id="tab-transfer" class="tab-content">
-        <div class="page-title">🔄 BOZOR</div>
+        <div class="page-title">🔄 TRANSFER MARKET</div>
         <div class="placeholder-box">
             <p style="color: #8899a6;">Transfer bozori tez orada ishga tushadi.</p>
         </div>
     </div>
 
+    <!-- ================= UNIKAL PASTKI MENYU ================= -->
     <div class="nav-bar">
         <div class="nav-item active-nav" id="nav-squad" onclick="switchTab('squad')">
-            <span>🛡️</span>Jamoam
+            <img src="500.jpg" class="nav-icon" alt="Jamoam">
+            Jamoam
         </div>
         <div class="nav-item" id="nav-play" onclick="switchTab('play')">
-            <span>🎮</span>O'ynash
+            <img src="503.png" class="nav-icon" alt="O'ynash">
+            O'ynash
         </div>
         <div class="nav-item" id="nav-transfer" onclick="switchTab('transfer')">
-            <span>🔄</span>Transfer
+            <img src="502.jpg" class="nav-icon" alt="Transfer">
+            Transfer
         </div>
     </div>
 
@@ -182,10 +200,6 @@
         tg.expand();
 
         let coins = 1000;
-        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-        
-        // Agar xohlasangiz jamoa nomini foydalanuvchi ismiga o'zgartirishimiz mumkin, hozircha professional FC THE END turibdi
-        // if (user) { document.getElementById('team-name-display').innerText = "FC " + user.first_name.toUpperCase(); }
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active-tab'));
@@ -211,13 +225,12 @@
                 document.getElementById('coin-balance').innerText = "💰 " + coins;
                 const rp = playersDataset[Math.floor(Math.random() * playersDataset.length)];
                 
-                // Chiqqan o'yinchini pozitsiyasiga qarab joylash
                 if(rp.pos === "ST") { updateSlot('st', rp); }
                 else if(rp.pos === "MID") { updateSlot('mid', rp); }
                 else if(rp.pos === "DEF") { updateSlot('def', rp); }
                 else if(rp.pos === "GK") { updateSlot('gk', rp); }
 
-                alert("Tabriklaymiz! Jamoangizga qo'shildi: " + rp.name + " (OVR " + rp.ovr + ")");
+                alert("Sizga yangi o'yinchi tushdi: " + rp.name);
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             } else {
                 alert("Mablag' yetarli emas!");
@@ -228,11 +241,10 @@
             document.getElementById(slot + '-name').innerText = player.name;
             document.getElementById(slot + '-ovr').innerText = player.ovr;
             document.getElementById(slot + '-emoji').innerText = player.emoji;
-            // Eslatma: OVR ni qayta hisoblash tizimini keyinroq qo'shamiz
         }
 
         function startMatch() { alert("Match qismi tayyorlanyapti!"); }
     </script>
 </body>
-            </html>
+    </html>
     
