@@ -1,94 +1,267 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mini Football Pro</title>
-    <style>
-        body { margin: 0; background: #0b0e14; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        #top-bar { position: fixed; top: 0; width: 100%; height: 55px; background: #111622; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 1000; box-sizing: border-box; }
-        #main-container { margin-top: 55px; height: calc(100vh - 120px); overflow-y: auto; }
-        .tab-content { display: none; padding: 15px; }
-        .active-tab { display: block; }
-        .squad-pitch { background: #27ae60; height: 350px; border-radius: 12px; position: relative; border: 2px solid white; margin-bottom: 20px; }
-        .pitch-card { position: absolute; width: 60px; transform: translateX(-50%); background: #1c2833; border: 2px solid #f1c40f; border-radius: 8px; text-align: center; }
-        .card-ovr { background: #f1c40f; color: #000; font-weight: bold; font-size: 11px; }
-        .card-name { font-size: 9px; padding: 3px; }
-        .bench-scroll-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
-        .bench-card { flex: 0 0 70px; background: #1c2833; border: 2px solid #3498db; border-radius: 8px; text-align: center; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 60px; background: #0b0e14; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
-        .active-nav { color: #3498db; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Pro Football Manager - DLS Style</title>
+<style>
+/* CSS: Professional Dizayn */
+*{box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+body{margin:0;padding:0;background:#0d1117;color:#fff;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;height:100vh;overflow:hidden;touch-action:none}
+/* Header */
+#top-bar{position:fixed;top:0;left:0;width:100%;height:60px;background:#161b22;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #30363d;z-index:1000}
+.balance-box{background:#1f2937;padding:8px 18px;border-radius:20px;font-weight:bold;color:#f1c40f;font-size:15px;border:1px solid #30363d;display:flex;align-items:center;gap:6px}
+.balance-icon{font-size:18px}
+.squad-count-box{background:#238636;color:white;font-weight:bold;padding:8px 18px;border-radius:8px;font-size:14px;border:1px solid #30363d}
+/* Main Content */
+#main-container{margin-top:60px;height:calc(100vh - 125px);overflow-y:auto;position:relative;background:#0d1117}
+.tab-content{display:none;padding:15px;flex-direction:column}
+.active-tab{display:flex}
+/* TAB 1: JAMOAM (DLS Style Pitch) */
+.section-title{font-size:16px;font-weight:bold;color:#58a6ff;margin-bottom:12px;border-left:4px solid #58a6ff;padding-left:10px;text-transform:uppercase;letter-spacing:1px}
+.pitch-container{background:#238636;height:380px;border-radius:12px;position:relative;border:2px solid rgba(255,255,255,0.4);margin-bottom:20px;box-shadow:inset 0 0 30px rgba(0,0,0,0.5);overflow:hidden}
+.pitch-lines{position:absolute;top:0;left:0;width:100%;height:100%;border-bottom:30px solid rgba(255,255,255,0.2)}
+.center-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:2px solid rgba(255,255,255,0.4);border-radius:50%}
+.center-line{position:absolute;top:50%;left:0;width:100%;height:2px;background:rgba(255,255,255,0.4);transform:translateY(-50%)}
+.goal-area{position:absolute;left:50%;transform:translateX(-50%);width:130px;height:65px;border:2px solid rgba(255,255,255,0.4)}
+.goal-area-top{top:-2px;border-top:none}
+.goal-area-bottom{bottom:-2px;border-bottom:none}
+/* Player Cards (Formation) */
+.pitch-player-card{position:absolute;width:65px;transform:translateX(-50%);text-align:center;cursor:pointer;z-index:100;transition:all 0.2s ease}
+.card-header{background:linear-gradient(135deg,#f1c40f 0%,#f39c12 100%);color:#000;font-weight:bold;font-size:12px;padding:3px 0;border-radius:6px 6px 0 0}
+.card-body{background:#1f2937;height:55px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-body img{width:100%;height:100%;object-fit:cover}
+.card-footer{background:#0d1117;color:white;font-size:9px;padding:4px 0;font-weight:bold;border-radius:0 0 6px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pos-badge{position:absolute;top:-8px;right:-8px;background:#da3633;font-size:8px;padding:2px 5px;border-radius:4px;font-weight:bold;border:1px solid white}
+/* TAB 3: TRANSFER (Market & Packs) */
+.pack-section{display:flex;gap:20px;justify-content:center;margin-top:30px}
+.pack-box{width:140px;background:linear-gradient(145deg,#1f2937,#161b22);border:2px solid #f1c40f;border-radius:12px;padding:20px 10px;text-align:center;box-shadow:0 8px 16px rgba(0,0,0,0.5)}
+.pack-icon{font-size:50px;margin-bottom:15px}
+.pack-title{font-weight:bold;font-size:14px;margin-bottom:8px}
+.pack-price{background:#f1c40f;color:black;font-weight:bold;padding:6px 12px;border-radius:15px;font-size:13px;display:inline-block;margin-top:15px;cursor:pointer}
+/* Pack Opening Modal */
+#pack-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:20000;align-items:center;justify-content:center;flex-direction:column}
+#modal-cards-container{display:flex;gap:15px;margin:25px 0}
+.modal-card{transform:scale(1.3);box-shadow:0 0 20px rgba(241,196,15,0.7)}
+.close-modal-btn{background:#238636;color:white;border:none;padding:12px 30px;border-radius:25px;font-weight:bold;margin-top:30px;cursor:pointer;font-size:15px}
+/* Bottom Nav */
+.nav-bar{position:fixed;bottom:0;left:0;width:100%;height:65px;background:#161b22;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #30363d;z-index:1000}
+.nav-item{display:flex;flex-direction:column;align-items:center;color:#777;font-size:12px;cursor:pointer}
+.nav-icon{font-size:22px;margin-bottom:3px}
+.active-nav{color:#58a6ff;font-weight:bold}
+</style>
 </head>
 <body>
-        <div id="top-bar">
-        <div id="user-balance">💰 1000</div>
-        <div id="squad-count">Jamoa: 5/15</div>
-    </div>
+<div id="top-bar">
+<div class="balance-box"><span class="balance-icon">💰</span><span id="balance-amount">1000</span></div>
+<div class="squad-count-box">SQUAD: <span id="squad-count">0</span> / 15</div>
+</div>
+<div id="main-container">
+<div id="tab-team" class="tab-content active-tab">
+<h3 class="section-title">Asosiy Tarkib</h3>
+<div class="pitch-container" id="squad-pitch">
+<div class="pitch-lines"></div>
+<div class="center-line"></div>
+<div class="center-circle"></div>
+<div class="goal-area goal-area-top"></div>
+<div class="goal-area goal-area-bottom"></div>
+</div>
+<h3 class="section-title">Zaxira</h3>
+<div id="reserve-list" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;"></div>
+</div>
+<div id="tab-play" class="tab-content">
+<h3 class="section-title">O'yin Rejimi</h3>
+<div style="height:250px;background:#1e824c;border-radius:8px;border:2px solid white;display:flex;align-items:center;justify-content:center;font-weight:bold;">Tez orada...</div>
+</div>
+<div id="tab-transfer" class="tab-content">
+<h3 class="section-title">Transfer Bozori</h3>
+<div class="pack-section">
+<div class="pack-box">
+<div class="pack-icon">📦</div>
+<div class="pack-title">Standart Pack (1x)</div>
+<div class="pack-price" onclick="buyPack(1, 150)">150 💰</div>
+</div>
+<div class="pack-box">
+<div class="pack-icon">🔥</div>
+<div class="pack-title">Mega Pack (3x)DLS (Dream League Soccer) professional o'yin studiyalari tomonidan yillar davomida, katta jamoalar va Unity kabi professional o'yin dvigatellari yordamida yaratilgan. Uni bitta HTML faylida, bitta promptda to'liq nusxasini, barcha 3D grafikasi, fizikasi va minglab o'yinchilar bazasi bilan yaratish **mutlaqo ilojsiz**. Hech qanday AI buni bittada qila olmaydi.
 
-    <div id="main-container">
-        <div id="tab-team" class="tab-content active-tab">
-            <div class="squad-pitch" id="formation-pitch"></div>
-            <h3>ZAXIRA</h3>
-            <div id="bench-scroll" class="bench-scroll-container"></div>
-        </div>
-        
-        <div id="tab-play" class="tab-content">
-            <div style="height:250px; background:#27ae60; border:2px solid white; position:relative;"></div>
-            <p>O'yin maydoni</p>
-        </div>
-        
-        <div id="tab-transfer" class="tab-content">
-            <button onclick="buyPack()">Pack ochish (150💰)</button>
-        </div>
-    </div>
+Lekin, men sizning maqsadingizni tushundim: o'yinni **professional interfeys (UI/UX)** va asosiy mantiqiy tizimlar (transfer, jamoa boshqaruvi) jihatidan DLSga imkon qadar professional va yaqin qilishni istayapsiz.
 
-    <div class="nav-bar">
-        <div class="nav-item active-nav" onclick="switchTab('tab-team', this)">Jamoam</div>
-        <div class="nav-item" onclick="switchTab('tab-play', this)">O'ynash</div>
-        <div class="nav-item" onclick="switchTab('tab-transfer', this)">Transfer</div>
-    </div>
-        <script>
-        let balance = 1000;
-        let mainSquad = [
-            { name: "SHOMURODOV", ovr: 86, top: "15%", left: "50%" },
-            { name: "FAYZULLAYEV", ovr: 85, top: "45%", left: "25%" },
-            { name: "MASHARIPOV", ovr: 83, top: "45%", left: "75%" },
-            { name: "ALIQULOV", ovr: 80, top: "70%", left: "50%" },
-            { name: "YUSUPOV", ovr: 82, top: "85%", left: "50%" }
-        ];
-        let benchSquad = [];
+Men sizga kodni to'liq nusxalashingiz oson bo'lishi uchun bitta uzun blokda, ortiqcha bo'shliqlarsiz beraman. Bu kod DLSning **vizual uslubini va asosiy mexanikalarini** HTML5/CSS3/JS imkoniyatlari doirasida maksimal darajada professional qilib beradi.
 
-        function switchTab(id, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            el.classList.add('active-nav');
-        }
+### DLS Uslubidagi Professional Jamoa va Transfer Tizimi
 
-        function render() {
-            const pitch = document.getElementById('formation-pitch');
-            pitch.innerHTML = mainSquad.map(p => `
-                <div class="pitch-card" style="top:${p.top}; left:${p.left};">
-                    <div class="card-ovr">${p.ovr}</div>
-                    <div class="card-name">${p.name}</div>
-                </div>`).join('');
-            
-            document.getElementById('bench-scroll').innerHTML = benchSquad.map(p => `
-                <div class="bench-card">
-                    <div class="card-ovr">${p.ovr}</div>
-                    <div class="card-name">${p.name}</div>
-                </div>`).join('');
-        }
-        
-        function buyPack() {
-            if(balance >= 150) {
-                balance -= 150;
-                benchSquad.push({name: "YANGI", ovr: 75});
-                render();
-            }
-        }
-        render();
-    </script>
+Quyidagi kodni to'liq nusxalab, `index.html` faylingizni yangilang:
+
+```html
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Pro Football Manager - DLS Style</title>
+<style>
+/* CSS: Professional Dizayn */
+*{box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+body{margin:0;padding:0;background:#0d1117;color:#fff;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;height:100vh;overflow:hidden;touch-action:none}
+/* Header */
+#top-bar{position:fixed;top:0;left:0;width:100%;height:60px;background:#161b22;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #30363d;z-index:1000}
+.balance-box{background:#1f2937;padding:8px 18px;border-radius:20px;font-weight:bold;color:#f1c40f;font-size:15px;border:1px solid #30363d;display:flex;align-items:center;gap:6px}
+.balance-icon{font-size:18px}
+.squad-count-box{background:#238636;color:white;font-weight:bold;padding:8px 18px;border-radius:8px;font-size:14px;border:1px solid #30363d}
+/* Main Content */
+#main-container{margin-top:60px;height:calc(100vh - 125px);overflow-y:auto;position:relative;background:#0d1117}
+.tab-content{display:none;padding:15px;flex-direction:column}
+.active-tab{display:flex}
+/* TAB 1: JAMOAM (DLS Style Pitch) */
+.section-title{font-size:16px;font-weight:bold;color:#58a6ff;margin-bottom:12px;border-left:4px solid #58a6ff;padding-left:10px;text-transform:uppercase;letter-spacing:1px}
+.pitch-container{background:#238636;height:380px;border-radius:12px;position:relative;border:2px solid rgba(255,255,255,0.4);margin-bottom:20px;box-shadow:inset 0 0 30px rgba(0,0,0,0.5);overflow:hidden}
+.pitch-lines{position:absolute;top:0;left:0;width:100%;height:100%;border-bottom:30px solid rgba(255,255,255,0.2)}
+.center-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:2px solid rgba(255,255,255,0.4);border-radius:50%}
+.center-line{position:absolute;top:50%;left:0;width:100%;height:2px;background:rgba(255,255,255,0.4);transform:translateY(-50%)}
+.goal-area{position:absolute;left:50%;transform:translateX(-50%);width:130px;height:65px;border:2px solid rgba(255,255,255,0.4)}
+.goal-area-top{top:-2px;border-top:none}
+.goal-area-bottom{bottom:-2px;border-bottom:none}
+/* Player Cards (Formation) */
+.pitch-player-card{position:absolute;width:65px;transform:translateX(-50%);text-align:center;cursor:pointer;z-index:100;transition:all 0.2s ease}
+.card-header{background:linear-gradient(135deg,#f1c40f 0%,#f39c12 100%);color:#000;font-weight:bold;font-size:12px;padding:3px 0;border-radius:6px 6px 0 0}
+.card-body{background:#1f2937;height:55px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-body img{width:100%;height:100%;object-fit:cover}
+.card-footer{background:#0d1117;color:white;font-size:9px;padding:4px 0;font-weight:bold;border-radius:0 0 6px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pos-badge{position:absolute;top:-8px;right:-8px;background:#da3633;font-size:8px;padding:2px 5px;border-radius:4px;font-weight:bold;border:1px solid white}
+/* TAB 3: TRANSFER (Market & Packs) */
+.pack-section{display:flex;gap:20px;justify-content:center;margin-top:30px}
+.pack-box{width:140px;background:linear-gradient(145deg,#1f2937,#161b22);border:2px solid #f1c40f;border-radius:12px;padding:20px 10px;text-align:center;box-shadow:0 8px 16px rgba(0,0,0,0.5)}
+.pack-icon{font-size:50px;margin-bottom:15px}
+.pack-title{font-weight:bold;font-size:14px;margin-bottom:8px}
+.pack-price{background:#f1c40f;color:black;font-weight:bold;padding:6px 12px;border-radius:15px;font-size:13px;display:inline-block;margin-top:15px;cursor:pointer}
+/* Pack Opening Modal */
+#pack-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:20000;align-items:center;justify-content:center;flex-direction:column}
+#modal-cards-container{display:flex;gap:15px;margin:25px 0}
+.modal-card{transform:scale(1.3);box-shadow:0 0 20px rgba(241,196,15,0.7)}
+.close-modal-btn{background:#238636;color:white;border:none;padding:12px 30px;border-radius:25px;font-weight:bold;margin-top:30px;cursor:pointer;font-size:15px}
+/* Bottom Nav */
+.nav-bar{position:fixed;bottom:0;left:0;width:100%;height:65px;background:#161b22;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #30363d;z-index:1000}
+.nav-item{display:flex;flex-direction:column;align-items:center;color:#777;font-size:12px;cursor:pointer}
+.nav-icon{font-size:22px;margin-bottom:3px}
+.active-nav{color:#58a6ff;font-weight:bold}
+</style>
+</head>
+<body>
+<div id="top-bar">
+<div class="balance-box"><span class="balance-icon">💰</span><span id="balance-amount">1000</span></div>
+<div class="squad-count-box">SQUAD: <span id="squad-count">0</span> / 15</div>
+</div>
+<div id="main-container">
+<div id="tab-team" class="tab-content active-tab">
+<h3 class="section-title">Asosiy Tarkib</h3>
+<div class="pitch-container" id="squad-pitch">
+<div class="pitch-lines"></div>
+<div class="center-line"></div>
+<div class="center-circle"></div>
+<div class="goal-area goal-area-top"></div>
+<div class="goal-area goal-area-bottom"></div>
+</div>
+<h3 class="section-title">Zaxira</h3>
+<div id="reserve-list" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;"></div>
+</div>
+<div id="tab-play" class="tab-content">
+<h3 class="section-title">O'yin Rejimi</h3>
+<div style="height:250px;background:#1e824c;border-radius:8px;border:2px solid white;display:flex;align-items:center;justify-content:center;font-weight:bold;">Tez orada...</div>
+</div>
+<div id="tab-transfer" class="tab-content">
+<h3 class="section-title">Transfer Bozori</h3>
+<div class="pack-section">
+<div class="pack-box">
+<div class="pack-icon">📦</div>
+<div class="pack-title">Standart Pack (1x)</div>
+<div class="pack-price" onclick="buyPack(1, 150)">150 💰</div>
+</div>
+<div class="pack-box">
+<div class="pack-icon">🔥</div>
+<div class="pack-title">Mega Pack (3x)</div>
+<div class="pack-price" onclick="buyPack(3, 400)">400 💰</div>
+</div>
+</div>
+</div>
+</div>
+<div class="nav-bar">
+<div class="nav-item active-nav" onclick="switchTab('tab-team', this)"><div class="nav-icon">🛡️</div><span>Jamoam</span></div>
+<div class="nav-item" onclick="switchTab('tab-play', this)"><div class="nav-icon">⚽</div><span>O'ynash</span></div>
+<div class="nav-item" onclick="switchTab('tab-transfer', this)"><div class="nav-icon">🔄</div><span>Transfer</span></div>
+</div>
+<div id="pack-modal">
+<h2>YANGI SHARTNOMA!</h2>
+<div id="modal-cards-container"></div>
+<button class="close-modal-btn" onclick="closeModal()">KLUBGA QO'SHISH</button>
+</div>
+<script>
+/* JS: Professional Logika */
+let balance=1000;
+let squadPlayers=[
+{id:1,name:"YUSUPOV",ovr:82,pos:"GK",img:"yusupov.jpg",top:"85%",left:"50%"},
+{id:2,name:"ALIQULOV",ovr:80,pos:"CB",img:"aliqulov.jpg",top:"65%",left:"50%"},
+{id:3,name:"FAYZULLAYEV",ovr:85,pos:"LM",img:"abbos.jpg",top:"45%",left:"25%"},
+{id:4,name:"MASHARIPOV",ovr:83,pos:"RM",img:"masharipov.jpg",top:"45%",left:"75%"},
+{id:5,name:"SHOMURODOV",ovr:86,pos:"CF",img:"eldor.jpg",top:"25%",left:"50%"}
+];
+let reservePlayers=[];
+const playerPool=[
+{name:"URUNOV",ovr:81,img:"urunov.jpg"},{name:"SHUKUROV",ovr:82,img:"shukurov.jpg"},{name:"KHUSANOV",ovr:84,img:"khusanov.jpg"},{name:"ERKINV",ovr:79,img:"erkinov.jpg"},{name:"SERGEEV",ovr:78,img:"sergeev.jpg"},{name:"SAYFIEV",ovr:77,img:"sayfiev.jpg"}
+];
+function switchTab(tabId,el){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active-tab'));
+document.getElementById(tabId).classList.add('active-tab');
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active-nav'));
+el.classList.add('active-nav');
+}
+function renderSquad(){
+const pitch=document.getElementById('squad-pitch');
+pitch.innerHTML='<div class="pitch-lines"></div><div class="center-line"></div><div class="center-circle"></div><div class="goal-area goal-area-top"></div><div class="goal-area goal-area-bottom"></div>';
+squadPlayers.forEach(p=>{
+pitch.innerHTML+=`
+<div class="pitch-player-card" style="top:${p.top};left:${p.left}">
+<div class="pos-badge">${p.pos}</div>
+<div class="card-header">${p.ovr}</div>
+<div class="card-body"><img src="${p.img}" onerror="this.src='[https://api.dicebear.com/8.x/initials/svg?seed=$](https://api.dicebear.com/8.x/initials/svg?seed=$){p.name}'"></div>
+<div class="card-footer">${p.name}</div>
+</div>`;
+});
+const reserveList=document.getElementById('reserve-list');
+reserveList.innerHTML='';
+reservePlayers.forEach(p=>{
+reserveList.innerHTML+=`
+<div class="pitch-player-card" style="position:relative;transform:none;border:2px solid #3498db;flex:0 0 65px">
+<div class="card-header" style="background:#3498db;color:white">${p.ovr}</div>
+<div class="card-body"><img src="${p.img}" onerror="this.src='[https://api.dicebear.com/8.x/initials/svg?seed=$](https://api.dicebear.com/8.x/initials/svg?seed=$){p.name}'"></div>
+<div class="card-footer">${p.name}</div>
+</div>`;
+});
+document.getElementById('balance-amount').innerText=balance;
+document.getElementById('squad-count').innerText=squadPlayers.length+reservePlayers.length;
+}
+function buyPack(count,price){
+if(squadPlayers.length+reservePlayers.length+count>15){alert("Limit 15 ta! Ortiqchasini soting.");return;}
+if(balance<price){alert("Mablag' yetarli emas! 💰");return;}
+balance-=price;
+const modalCards=document.getElementById('modal-cards-container');
+modalCards.innerHTML='';
+for(let i=0;i<count;i++){
+let p={...playerPool[Math.floor(Math.random()*playerPool.length)]};
+reservePlayers.push(p);
+modalCards.innerHTML+=`
+<div class="pitch-player-card modal-card" style="position:relative;transform:scale(1.3);border:2px solid #f1c40f">
+<div class="card-header">${p.ovr}</div>
+<div class="card-body"><img src="${p.img}" onerror="this.src='[https://api.dicebear.com/8.x/initials/svg?seed=$](https://api.dicebear.com/8.x/initials/svg?seed=$){p.name}'"></div>
+<div class="card-footer">${p.name}</div>
+</div>`;
+}
+document.getElementById('pack-modal').style.display='flex';
+renderSquad();
+}
+function closeModal(){document.getElementById('pack-modal').style.display='none';}
+renderSquad();
+</script>
 </body>
-</html>
+                                        </html>
+                                                                
