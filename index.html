@@ -3,96 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Football Card</title>
+    <title>Mini Football Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #121212;
-            color: white;
-            font-family: 'Arial', sans-serif;
+            background-color: #0e1621;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
+            justify-content: flex-start;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
+
+        /* Yuqori panel: Balans */
+        .top-bar {
+            width: 100%;
+            max-width: 350px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #17212b;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            border: 1px solid #24303f;
+        }
+
+        .balance {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+
+        /* Futbolchi kartasi dizayni */
         .player-card {
-            background: linear-gradient(135deg, #gold, #bf953f, #fcf6ba, #b38728, #fbf5b7);
-            border: 4px solid #fff;
-            border-radius: 15px;
-            width: 200px;
-            height: 300px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, #d4af37 0%, #aa7c11 50%, #f3e5ab 100%);
+            border: 3px solid #ffffff;
+            border-radius: 18px;
+            width: 220px;
+            height: 320px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
             position: relative;
-            color: #111;
+            color: #000000 !important; /* Rang doim qora bo'lishi shart */
             text-align: center;
             padding: 15px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
         }
+
+        .player-card:active {
+            transform: scale(0.95);
+        }
+
         .rating {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 36px;
+            font-weight: 900;
             position: absolute;
-            top: 15px;
+            top: 12px;
             left: 15px;
+            color: #000000;
         }
+
         .position {
             position: absolute;
-            top: 50px;
+            top: 52px;
             left: 15px;
             font-weight: bold;
             font-size: 14px;
+            color: #222222;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
+
         .player-photo {
-            font-size: 70px;
-            margin-top: 30px;
+            font-size: 80px;
+            margin-top: 35px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
+
         .player-name {
             font-size: 20px;
             font-weight: bold;
             margin-top: 15px;
+            color: #000000;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
         }
+
         .stats {
             display: flex;
             justify-content: space-around;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 25px;
+            font-size: 13px;
             font-weight: bold;
-            background: rgba(255,255,255,0.5);
-            padding: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            padding: 6px;
             border-radius: 8px;
+        }
+
+        /* Paket ochish tugmasi */
+        .btn-pack {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            margin-top: 40px;
+            transition: 0.2s;
+        }
+
+        .btn-pack:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <div class="player-card">
-        <div class="rating">88</div>
-        <div class="position">ST (HJ)</div>
-        <div class="player-photo">🏃‍♂️</div>
-        <div class="player-name">B. Lee</div>
+    <div class="top-bar">
+        <span style="color: #8899a6;">Sizning balansingiz:</span>
+        <span class="balance" id="coin-balance">💰 1000</span>
+    </div>
+
+    <div class="player-card" id="card">
+        <div class="rating" id="p-ovr">88</div>
+        <div class="position" id="p-pos">ST</div>
+        <div class="player-photo" id="p-emoji">🏃‍♂️</div>
+        <div class="player-name" id="p-name">B. LEE</div>
         
         <div class="stats">
-            <div>TEZ: 95</div>
-            <div>ZAR: 89</div>
-            <div>PAS: 82</div>
+            <div>TEZ: <span id="s-pac">95</span></div>
+            <div>ZAR: <span id="s-sho">89</span></div>
+            <div>PAS: <span id="s-pas">82</span></div>
         </div>
     </div>
 
-<script>
-    // Telegram WebApp interfeysini ishga tushirish
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Oynani to'liq ekranga ochish
+    <button class="btn-pack" onclick="openPack()">🎁 PAKET OCHISH (150 💰)</button>
 
-    // Telegram'dan foydalanuvchi ma'lumotlarini olish
-    const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-    if (user) {
-        // Agar foydalanuvchi ismi bo'lsa, kartadagi nomni uning ismiga o'zgartiramiz
-        document.querySelector('.player-name').innerText = user.first_name;
-    }
-</script>
+        // Dastlabki o'yin ma'lumotlari
+        let coins = 1000;
+        const user = tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+        
+        if (user) {
+            document.getElementById('p-name').innerText = user.first_name;
+        }
 
+        // Paket ochganda chiqishi mumkin bo'lgan tasodifiy o'yinchilar bazasi
+        const playersDataset = [
+            { name: "Ronaldo", ovr: 92, pos: "ST", emoji: "🐐", pac: 91, sho: 93, pas: 81 },
+            { name: "Messi", ovr: 91, pos: "RW", emoji: "👽", pac: 85, sho: 89, pas: 94 },
+            { name: "Mbappe", ovr: 91, pos: "ST", emoji: "⚡", pac: 97, sho: 88, pas: 80 },
+            { name: "Neymar", ovr: 88, pos: "LW", emoji: "🇧🇷", pac: 86, sho: 83, pas: 86 },
+            { name: "Salah", ovr: 89, pos: "RW", emoji: "👑", pac: 90, sho: 87, pas: 82 },
+            { name: "Bellingham", ovr: 87, pos: "CM", emoji: "💎", pac: 80, sho: 85, pas: 85 },
+            { name: "Van Dijk", ovr: 89, pos: "CB", emoji: "🧱", pac: 78, sho: 60, pas: 75 }
+        ];
+
+        function openPack() {
+            if (coins >= 150) {
+                coins -= 150; // Pullarni ayirish
+                document.getElementById('coin-balance').innerText = "💰 " + coins;
+
+                // Tasodifiy futbolchi tanlash
+                const randomPlayer = playersDataset[Math.floor(Math.random() * playersDataset.length)];
+
+                // Kartani yangi futbolchi ma'lumotlari bilan yangilash
+                document.getElementById('p-name').innerText = randomPlayer.name;
+                document.getElementById('p-ovr').innerText = randomPlayer.ovr;
+                document.getElementById('p-pos').innerText = randomPlayer.pos;
+                document.getElementById('p-emoji').innerText = randomPlayer.emoji;
+                document.getElementById('s-pac').innerText = randomPlayer.pac;
+                document.getElementById('s-sho').innerText = randomPlayer.sho;
+                document.getElementById('s-pas').innerText = randomPlayer.pas;
+
+                // Telegram tebranish (vibratsiya) effekti (faqat telefonda seziladi)
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            } else {
+                alert("Mablag' yetarli emas! Paket ochish uchun 150 tanga kerak.");
+            }
+        }
+    </script>
 </body>
-  </html>
-  
+    </html>
+    
